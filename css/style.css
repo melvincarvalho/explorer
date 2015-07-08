@@ -39,7 +39,7 @@ html, body {
   padding-right: 10px;
   padding-top: 0px;
   text-overflow: ellipsis;
-  white-space: nowrap;  
+  white-space: nowrap;
 }
 
 .name {
@@ -52,6 +52,7 @@ html, body {
   font-weight: bold;
   height: auto;
   line-height: 18px;
+  white-space: nowrap;
 }
 
 a {

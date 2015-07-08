@@ -60,7 +60,6 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     $scope.my = {};
     $scope.friends = [];
     $scope.initStore();
-    $scope.fetchBoard();
     $scope.initUI();
 
     // start browser cache DB
@@ -156,7 +155,7 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
   };
 
   $scope.refresh = function() {
-    $scope.fetchBoard();
+    console.log('refresh');
     $scope.render();
   };
 
@@ -304,24 +303,6 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     });
 
   }
-
-
-  $scope.fetchBoard = function (position) {
-    var storageURI = 'https://chess.databox.me/Public/.chess/test';
-    if ($location.search().storageURI) {
-      storageURI = $location.search().storageURI;
-    }
-    $scope.storageURI = storageURI;
-    connectToSocket($scope.storageURI);
-
-    f.requestURI(storageURI, undefined, true, function(ok, body) {
-      var p = g.statementsMatching(undefined, URN('fen'));
-      if (p.length) {
-        $scope.position = p[0].object.value;
-        $scope.render();
-      }
-    });
-  };
 
   $scope.invalidate = function(uri) {
     console.log('invalidate : ' + uri);

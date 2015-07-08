@@ -76,6 +76,11 @@
           <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('knows')>Friends</a></div>
           <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('queue')>Fetched</a></div>
           <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('storage')>Storage</a></div>
+          <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('seeAlso')>SeeAlso</a></div>
+          <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('wallet')>Wallet</a></div>
+          <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('preferences')>Preferences</a></div>
+          <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('workspaces')>Workspaces</a></div>
+          <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('keys')>Keys</a></div>
         </div>
       </div>
     </div>
@@ -107,13 +112,33 @@
         </div>
 
         <div class="name" ng-hide="!show.storage" ng-repeat="n in storage">
-          {{n}}
+          <a href="{{n}}">{{n}}</a>
+        </div>
+
+        <div class="name" ng-hide="!show.seeAlso" ng-repeat="n in seeAlso">
+          <a href="{{n}}">{{n}}</a>
+        </div>
+
+        <div class="name" ng-hide="!show.wallet" ng-repeat="n in wallet">
+          <a href="{{n}}">{{n}}</a>
+        </div>
+
+        <div class="name" ng-hide="!show.preferences" ng-repeat="n in preferences">
+          <a href="{{n}}">{{n}}</a>
+        </div>
+
+        <div class="name" ng-hide="!show.workspaces" ng-repeat="n in workspaces">
+          <a href="{{n}}">{{n}}</a>
+        </div>
+
+        <div class="name" ng-hide="!show.keys" ng-repeat="n in keys">
+          <a href="{{n}}">{{n}}</a>
         </div>
 
 
         <div class="name" ng-hide="!show.queue" ng-repeat="(key, value) in fetched">
           <a title="fetched: {{value}}"  ng-click="invalidate(key)">X</a>
-          <span title="fetched: {{value}}">{{key}}</span>
+          <span title="fetched: {{value}}"><a href="{{key}}">{{key}}</a></span>
         </div>
 
       </div>

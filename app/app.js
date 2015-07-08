@@ -2,6 +2,7 @@ var template;
 var f,g;
 var db;
 
+var CERT  = $rdf.Namespace("http://www.w3.org/ns/auth/cert#");
 var CHAT  = $rdf.Namespace("https://ns.rww.io/chat#");
 var CURR  = $rdf.Namespace("https://w3id.org/cc#");
 var DCT   = $rdf.Namespace("http://purl.org/dc/terms/");
@@ -53,12 +54,15 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
     $scope.queue = [];
     $scope.knows = [];
+    $scope.preferences = [];
     $scope.storage = [];
     $scope.fetched = {};
     $scope.seeAlso = [];
     $scope.wallet = [];
+    $scope.workspaces = [];
     $scope.my = {};
     $scope.friends = [];
+    $scope.keys = [];
     $scope.initStore();
     $scope.initUI();
 
@@ -72,8 +76,13 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     $scope.show = {
         profile: true,
         knows: false,
-        seeAlso: false,
+        queue: false,
         storage: false,
+        seeAlso: false,
+        wallet: false,
+        preferences: false,
+        workspaces: false,
+        keys: false,
     };
 
   };
@@ -127,7 +136,7 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
     var name = g.statementsMatching($rdf.sym($scope.my.id), FOAF('name'), undefined);
     if (name.length) {
-      $scope.my.name = name[0].object.value;      
+      $scope.my.name = name[0].object.value;
     }
 
   };
@@ -167,8 +176,13 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     $scope.show = {
         profile: false,
         knows: false,
-        seeAlso: false,
+        queue: false,
         storage: false,
+        seeAlso: false,
+        wallet: false,
+        preferences: false,
+        workspaces: false,
+        keys: false,
     };
     $scope.show[type] = true;
     console.log($scope.show);
@@ -204,11 +218,34 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
       }
     }
 
+
+    workspaces = g.statementsMatching(undefined, PIM('workspace'), undefined);
+    for (i=0; i<workspaces.length; i++) {
+      //console.log('wallet found : ' + wallets[i].object.value);
+      addToArray($scope.workspaces, workspaces[i].object.value);
+      addToQueue($scope.queue, workspaces[i].object.value);
+    }
+
+    var preferences = g.statementsMatching($rdf.sym($scope.user), PIM('preferencesFile'), undefined);
+    for (i=0; i<preferences.length; i++) {
+      //console.log('wallet found : ' + wallets[i].object.value);
+      addToArray($scope.preferences, preferences[i].object.value);
+      addToQueue($scope.queue, preferences[i].object.value);
+    }
+
+
     var wallets = g.statementsMatching($rdf.sym($scope.user), CURR('wallet'), undefined);
     for (i=0; i<wallets.length; i++) {
       //console.log('wallet found : ' + wallets[i].object.value);
       addToArray($scope.wallet, wallets[i].object.value);
       addToQueue($scope.queue, wallets[i].object.value);
+    }
+
+    var keys = g.statementsMatching($rdf.sym($scope.user), CERT('key'), undefined);
+    for (i=0; i<keys.length; i++) {
+      //console.log('wallet found : ' + wallets[i].object.value);
+      addToArray($scope.keys, keys[i].object.value);
+      addToQueue($scope.queue, keys[i].object.value);
     }
 
 

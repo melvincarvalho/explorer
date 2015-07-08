@@ -1,4 +1,4 @@
-
+var template;
 var f,g;
 var db;
 
@@ -39,7 +39,7 @@ App.config(function($locationProvider) {
 });
 
 App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudio, LxNotificationService, LxProgressService, LxDialogService) {
-
+  template = $scope;
 
   // INIT functions
   //
@@ -51,17 +51,17 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
   // set init variables
   $scope.init = function() {
 
-    $scope.initStore();
-    $scope.fetchBoard();
-    $scope.initUI();
     $scope.queue = [];
     $scope.knows = [];
     $scope.storage = [];
-    $scope.fetched = [];
+    $scope.fetched = {};
     $scope.seeAlso = [];
     $scope.wallet = [];
     $scope.my = {};
     $scope.friends = [];
+    $scope.initStore();
+    $scope.fetchBoard();
+    $scope.initUI();
 
     // start browser cache DB
   	db = new Dexie("chrome:theSession");
@@ -178,15 +178,23 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
   // QUEUE
   function updateQueue() {
     var i, j;
+    var workspaces;
     console.log('updating queue');
     addToQueue($scope.queue, $scope.user);
+
+    workspaces = g.statementsMatching($rdf.sym($scope.user), PIM('storage'), undefined);
+    for (i=0; i<workspaces.length; i++) {
+      addToArray($scope.storage, workspaces[i].object.value);
+      addToQueue($scope.queue, workspaces[i].object.value);
+    }
+
 
     var knows = g.statementsMatching($rdf.sym($scope.user), FOAF('knows'), undefined);
     for (i=0; i<knows.length; i++) {
       //console.log(knows[i].object.uri);
       addToArray($scope.knows, knows[i].object.value);
       addToQueue($scope.queue, knows[i].object.value);
-      var workspaces = g.statementsMatching($rdf.sym(knows[i].object.value), PIM('storage'), undefined);
+      workspaces = g.statementsMatching($rdf.sym(knows[i].object.value), PIM('storage'), undefined);
       for (j=0; j<workspaces.length; j++) {
         addToArray($scope.storage, workspaces[j].object.value);
         addToQueue($scope.queue, workspaces[j].object.value);
@@ -317,6 +325,7 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
   $scope.invalidate = function(uri) {
     console.log('invalidate : ' + uri);
+    uri = uri.split('#')[0];
     f.unload(uri);
     f.refresh($rdf.sym(uri));
   };

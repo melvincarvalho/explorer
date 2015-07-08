@@ -32,7 +32,7 @@
         <span class="app-name fs-display-2">Explorer</span>
       </div>
       <div class="mt fs-subhead">Your personal data explorer</div>
-      <div><button ng-audio="audio/button-3.mp3" class="btn btn--xl btn--blue btn--raised" lx-ripple aria-label="Login" ng-click="TLSlogin()">
+      <div><button ng-audio="audio/button-3.mp3" class="btn btn--xl  bgc-blue-200 btn--raised" lx-ripple aria-label="Login" ng-click="TLSlogin()">
         <span>{{loginTLSButtonText}}</span>
       </button></div>
     </div>
@@ -74,7 +74,7 @@
         <div class="sidebar-menu">
           <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('profile')>Profile</a></div>
           <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('knows')>Friends</a></div>
-          <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('queue')>Queue</a></div>
+          <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('queue')>Fetched</a></div>
           <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('storage')>Storage</a></div>
         </div>
       </div>
@@ -90,7 +90,8 @@
 
           <div>
             <a class="name" href="{{user}}" alt="user">{{my.name}}</a>
-            <img height="48" width="48" style="border-radius : 50%" ng-src="{{my.picture}}" alt="picture"/>
+            <img ng-hide="!my.picture" height="48" width="48" style="border-radius : 50%" ng-src="{{my.picture}}" alt="picture"/>
+            <img ng-hide="my.picture" height="48" width="48" style="border-radius : 50%" ng-src="images/generic_photo.png" alt="picture"/>
           </div>
 
         </div>
@@ -110,8 +111,9 @@
         </div>
 
 
-        <div class="name" ng-hide="!show.queue" ng-repeat="n in queue">
-          {{n}}
+        <div class="name" ng-hide="!show.queue" ng-repeat="(key, value) in fetched">
+          <a title="fetched: {{value}}"  ng-click="invalidate(key)">X</a>
+          <span title="fetched: {{value}}">{{key}}</span>
         </div>
 
       </div>

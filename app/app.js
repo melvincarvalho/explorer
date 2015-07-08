@@ -122,11 +122,13 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
       avatar = g.statementsMatching($rdf.sym($scope.my.id), FOAF('depiction'), undefined);
     }
     if (avatar.length) {
-      $scope.my.picture = avatar[0].object.value;      
+      $scope.my.picture = avatar[0].object.value;
     }
 
     var name = g.statementsMatching($rdf.sym($scope.my.id), FOAF('name'), undefined);
-    $scope.my.name = name[0].object.value;
+    if (name.length) {
+      $scope.my.name = name[0].object.value;      
+    }
 
   };
 

@@ -121,7 +121,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     if (!avatar.length) {
       avatar = g.statementsMatching($rdf.sym($scope.my.id), FOAF('depiction'), undefined);
     }
-    $scope.my.picture = avatar[0].object.value;
+    if (avatar.length) {
+      $scope.my.picture = avatar[0].object.value;      
+    }
 
     var name = g.statementsMatching($rdf.sym($scope.my.id), FOAF('name'), undefined);
     $scope.my.name = name[0].object.value;

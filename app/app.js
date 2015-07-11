@@ -350,6 +350,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     uri = uri.split('#')[0];
     f.unload(uri);
     f.refresh($rdf.sym(uri));
+    db.cache.delete(uri).then(function() {
+      LxNotificationService.success('Successfully deleted Cache');
+    });
   };
 
   // HELPER functions

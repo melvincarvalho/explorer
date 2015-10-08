@@ -60,6 +60,7 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     $scope.seeAlso = [];
     $scope.wallet = [];
     $scope.workspaces = [];
+    $scope.configurations = [];
     $scope.my = {};
     $scope.friends = [];
     $scope.keys = [];
@@ -83,6 +84,7 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
         preferences: false,
         workspaces: false,
         keys: false,
+        configurations: false,
     };
 
   };
@@ -183,6 +185,7 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
         preferences: false,
         workspaces: false,
         keys: false,
+        configurations: false,
     };
     $scope.show[type] = true;
     console.log($scope.show);
@@ -221,29 +224,33 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
     workspaces = g.statementsMatching(undefined, PIM('workspace'), undefined);
     for (i=0; i<workspaces.length; i++) {
-      //console.log('wallet found : ' + wallets[i].object.value);
       addToArray($scope.workspaces, workspaces[i].object.value);
+      addToArray($scope.workspaces, workspaces[i].object.value + '*');
       addToQueue($scope.queue, workspaces[i].object.value);
+      addToQueue($scope.queue, workspaces[i].object.value + '*');
     }
 
     var preferences = g.statementsMatching($rdf.sym($scope.user), PIM('preferencesFile'), undefined);
     for (i=0; i<preferences.length; i++) {
-      //console.log('wallet found : ' + wallets[i].object.value);
       addToArray($scope.preferences, preferences[i].object.value);
       addToQueue($scope.queue, preferences[i].object.value);
+    }
+
+    var configurations = g.statementsMatching(null, RDF('type'), PIM('ConfigurationFile'));
+    for (i=0; i<configurations.length; i++) {
+      addToArray($scope.configurations, configurations[i].subject.value);
+      addToQueue($scope.queue, configurations[i].subject.value);
     }
 
 
     var wallets = g.statementsMatching($rdf.sym($scope.user), CURR('wallet'), undefined);
     for (i=0; i<wallets.length; i++) {
-      //console.log('wallet found : ' + wallets[i].object.value);
       addToArray($scope.wallet, wallets[i].object.value);
       addToQueue($scope.queue, wallets[i].object.value);
     }
 
     var keys = g.statementsMatching($rdf.sym($scope.user), CERT('key'), undefined);
     for (i=0; i<keys.length; i++) {
-      //console.log('wallet found : ' + wallets[i].object.value);
       addToArray($scope.keys, keys[i].object.value);
       addToQueue($scope.queue, keys[i].object.value);
     }

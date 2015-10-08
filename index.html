@@ -81,6 +81,7 @@
           <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('preferences')>Preferences</a></div>
           <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('workspaces')>Workspaces</a></div>
           <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('keys')>Keys</a></div>
+          <div><a ng-audio="audio/button-3.mp3" class="sidebar" ng-click=display('configurations')>Configurations</a></div>
         </div>
       </div>
     </div>
@@ -132,6 +133,10 @@
         </div>
 
         <div class="name" ng-hide="!show.keys" ng-repeat="n in keys">
+          <a href="{{n}}">{{n}}</a>
+        </div>
+
+        <div class="name" ng-hide="!show.configurations" ng-repeat="n in configurations">
           <a href="{{n}}">{{n}}</a>
         </div>
 

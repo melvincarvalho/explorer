@@ -136,8 +136,16 @@
           <a href="{{n}}">{{n}}</a>
         </div>
 
-        <div class="name" ng-hide="!show.configurations" ng-repeat="n in configurations">
-          <a href="{{n}}">{{n}}</a>
+        <div class="name" ng-hide="!show.configurations" ng-repeat="n in apps">
+          <br>
+          <img ng-show="n.icon" height="48" width="48" ng-src="{{n.icon}}"/>
+          <hr>
+          <div ng-show="n.name">{{n.name}} (<a href="{{n.id}}">config</a>) </div>
+          <div ng-show="n.description">{{n.description}}</div>
+          <div ng-show="n.dataSource">dataSource : <a target="_blank" href="{{n.dataSource}}">View</a></div>
+          <div ng-show="n.homepage">Homepage: <a target="_blank" href="{{n.homepage}}">Launch</a> </div>
+          <hr>
+          <br>
         </div>
 
 

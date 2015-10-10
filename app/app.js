@@ -61,6 +61,8 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     $scope.wallet = [];
     $scope.workspaces = [];
     $scope.configurations = [];
+    $scope.configurationFiles = [];
+    $scope.apps = [];
     $scope.my = {};
     $scope.friends = [];
     $scope.keys = [];
@@ -117,6 +119,7 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     $scope.renderMain();
     $scope.renderProfile();
     $scope.renderFriends();
+    $scope.renderConfigurations();
   };
 
   $scope.renderMain = function () {
@@ -168,6 +171,41 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
       if (!a.picture) return 1;
     });
   };
+
+  $scope.renderConfigurations = function() {
+    for (var i=0; i<$scope.configurations.length; i++) {
+
+      var app = { 'id' : $scope.configurations[i] };
+
+      var name = g.statementsMatching($rdf.sym($scope.configurations[i]), SOLID('name'), undefined);
+      if (name.length) {
+        app.name = name[0].object.value;
+      }
+
+      var icon = g.statementsMatching($rdf.sym($scope.configurations[i]), SOLID('icon'), undefined);
+      if (icon.length) {
+        app.icon = icon[0].object.value;
+      }
+
+      var dataSource = g.statementsMatching($rdf.sym($scope.configurations[i]), SOLID('dataSource'), undefined);
+      if (dataSource.length) {
+        app.dataSource = dataSource[0].object.value;
+      }
+
+      var description = g.statementsMatching($rdf.sym($scope.configurations[i]), SOLID('description'), undefined);
+      if (description.length) {
+        app.description = description[0].object.value;
+      }
+
+      var homepage = g.statementsMatching($rdf.sym($scope.configurations[i]), SOLID('homepage'), undefined);
+      if (homepage.length) {
+        app.homepage = homepage[0].object.value;
+      }
+
+      addToApps($scope.apps, app);
+    }
+  };
+
 
   $scope.refresh = function() {
     console.log('refresh');
@@ -236,11 +274,17 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
       addToQueue($scope.queue, preferences[i].object.value);
     }
 
-    var configurations = g.statementsMatching(null, RDF('type'), PIM('ConfigurationFile'));
-    for (i=0; i<configurations.length; i++) {
-      addToArray($scope.configurations, configurations[i].subject.value);
-      addToQueue($scope.queue, configurations[i].subject.value);
+    var configurationFiles = g.statementsMatching(null, RDF('type'), PIM('ConfigurationFile'));
+    for (i=0; i<configurationFiles.length; i++) {
+      addToArray($scope.configurationFiles, configurationFiles[i].subject.value );
+      addToQueue($scope.queue, configurationFiles[i].subject.value);
+      var configurations = g.statementsMatching($rdf.sym(configurationFiles[i].subject.value), SOLID('configuration'), undefined);
+      for (j=0; j<configurations.length; j++) {
+        addToArray($scope.configurations, configurations[j].object.value );
+        addToQueue($scope.queue, configurations[j].object.value);
+      }
     }
+
 
 
     var wallets = g.statementsMatching($rdf.sym($scope.user), CURR('wallet'), undefined);
@@ -382,6 +426,18 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 		}
 		array.push(el);
 	}
+
+  function addToApps(array, el) {
+		if (!array) return;
+		for (var i=0; i<array.length; i++) {
+			if (array[i].id === el.id) {
+        array[i] = el;
+				return;
+			}
+		}
+		array.push(el);
+	}
+
 
   function addToQueue(array, el) {
     if (!array) return;

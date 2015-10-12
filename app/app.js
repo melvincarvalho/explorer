@@ -39,17 +39,24 @@ App.config(function($locationProvider) {
   .html5Mode({ enabled: true, requireBase: false });
 });
 
+/**
+ * The app controller
+ */
 App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudio, LxNotificationService, LxProgressService, LxDialogService) {
   template = $scope;
 
   // INIT functions
   //
-  // save app configuration if it's the first time the app runs
+  /**
+   * Initialize app
+   */
   $scope.initApp = function() {
     $scope.init();
   };
 
-  // set init variables
+  /**
+   * Initialize
+   */
   $scope.init = function() {
 
     $scope.queue = [];
@@ -91,6 +98,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
   };
 
+  /**
+   * Init UI
+   */
   $scope.initUI = function() {
     $scope.initialized = true;
     $scope.loggedIn = false;
@@ -98,6 +108,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     $scope.audio = ngAudio.load('audio/button-3.mp3');
   };
 
+  /**
+   * Init store
+   */
   $scope.initStore = function() {
     // start in memory DB
     g = $rdf.graph();
@@ -115,6 +128,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
   // RENDER functions
   //
   //
+  /**
+   * Render the main screen
+   */
   $scope.render = function() {
     $scope.renderMain();
     $scope.renderProfile();
@@ -122,9 +138,15 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     $scope.renderConfigurations();
   };
 
+  /**
+   * Render the main screen
+   */
   $scope.renderMain = function () {
   };
 
+  /**
+   * Render the profile
+   */
   $scope.renderProfile = function() {
     if (!$scope.my) return;
     if (!$scope.user) return;
@@ -146,6 +168,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
   };
 
+  /**
+   * Render friends
+   */
   $scope.renderFriends = function() {
     for (var i=0; i<$scope.knows.length; i++) {
 
@@ -172,6 +197,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     });
   };
 
+  /**
+   * Render configurations
+   */
   $scope.renderConfigurations = function() {
     for (var i=0; i<$scope.configurations.length; i++) {
 
@@ -207,11 +235,18 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
   };
 
 
+  /**
+   * Refresh the screen
+   */
   $scope.refresh = function() {
     console.log('refresh');
     $scope.render();
   };
 
+  /**
+   * Display a tab
+   * @param  {String} type which tab
+   */
   $scope.display = function(type) {
     $scope.show = {
         profile: false,
@@ -233,7 +268,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
   // QUEUE functions
   //
   //
-  // QUEUE
+  /**
+   * Update the queue
+   */
   function updateQueue() {
     var i, j;
     var workspaces;
@@ -328,7 +365,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
   // FETCH functions
   //
   //
-
+  /**
+   * Fetch all items in queue
+   */
   function fetchAll() {
 
     updateQueue();
@@ -349,10 +388,13 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
   }
 
+  /**
+   * Fetch a single URI
+   * @param  {String} uri The URI to fetch
+   */
   function fetch(uri) {
     $scope.fetched[uri] = new Date();
     console.log('fetching : ' + uri);
-    //console.log(g);
 
     var why = uri.split('#')[0];
 
@@ -362,9 +404,6 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
         console.log('fetched '+ uri +' from cache in : ' + (new Date() - $scope.fetched[uri]) );
         console.log(res);
         for(var i=0; i<res.quads.length; i++) {
-          //console.log(res.quads);
-          //console.log('item : ');
-          //console.log(res.quads[i]);
           var t = res.quads[i].object.uri;
           if (t) {
             t = $rdf.sym(res.quads[i].object.value);
@@ -396,6 +435,11 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
   }
 
+
+  /**
+   * Invalidate a cached URI
+   * @param  {String} uri The URI to invalidate
+   */
   $scope.invalidate = function(uri) {
     console.log('invalidate : ' + uri);
     uri = uri.split('#')[0];
@@ -409,7 +453,11 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
   // HELPER functions
   //
   //
-
+  /**
+   * Add an element to an array once
+   * @param {Array} array the array to add to
+   * @param {Object} el   the element to add
+   */
   function addToArray(array, el) {
     if (!array) return;
     if (array.indexOf(el) === -1) {
@@ -417,6 +465,11 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     }
   }
 
+  /**
+   * Add an element to the firends array once
+   * @param {Array} array the array to add to
+   * @param {Object} el   the element to add
+   */
   function addToFriends(array, el) {
 		if (!array) return;
 		for (var i=0; i<array.length; i++) {
@@ -427,6 +480,11 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 		array.push(el);
 	}
 
+  /**
+   * Add an element to the apps array once
+   * @param {Array} array the array to add to
+   * @param {Object} el   the element to add
+   */
   function addToApps(array, el) {
 		if (!array) return;
 		for (var i=0; i<array.length; i++) {
@@ -439,6 +497,11 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 	}
 
 
+  /**
+   * Add an element to the queue
+   * @param {Array} array the array to add to
+   * @param {Object} el   the element to add
+   */
   function addToQueue(array, el) {
     if (!array) return;
     if (array.indexOf(el) === -1) {
@@ -446,6 +509,10 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     }
   }
 
+  /**
+   * Open a modal dialog
+   * @param  {String} elem  [description]
+   */
   $scope.openDialog = function(elem, reset) {
     if (reset) {
       $scope.resetContact();
@@ -458,34 +525,10 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     });
   };
 
-  $scope.save = function() {
-    var position = $scope.position;
-    if (!position) {
-      LxNotificationService.error('position is empty');
-      return;
-    }
-    console.log(position);
 
-    $http({
-      method: 'PUT',
-      url: $scope.storageURI,
-      withCredentials: true,
-      headers: {
-        "Content-Type": "text/turtle"
-      },
-      data: '<#this> '+ URN('fen') +' """' + position + '""" .',
-    }).
-    success(function(data, status, headers) {
-      LxNotificationService.success('Position saved');
-      $location.search('storageURI', $scope.storageURI);
-      $scope.renderBoard(position);
-    }).
-    error(function(data, status, headers) {
-      LxNotificationService.error('could not save position');
-    });
-
-  };
-
+  /**
+   * TLS Login with WebID
+   */
   $scope.TLSlogin = function() {
     $scope.loginTLSButtonText = 'Logging in...';
     $http({
@@ -512,8 +555,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     });
   };
 
-
-
+  /**
+   * Logout
+   */
   $scope.logout = function() {
     $scope.init();
     LxNotificationService.success('Logout Successful!');
@@ -522,14 +566,27 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
   // SOCKETS
   //
   //
+  /**
+   * Get wss from URI
+   * @param  {String} uri The URI to use
+   */
   function getWss(uri) {
     return 'wss://' + uri.split('/')[2];
   }
 
+  /**
+   * Send subscrption
+   * @param  {String} message The message
+   * @param  {String} socket  The socket to send to
+   */
   function sendSub(message, socket) {
     socket.send(message);
   }
 
+  /**
+   * Connect to a web socket
+   * @param  {String} sub Where to subscribe to
+   */
   function connectToSocket(sub) {
     if ($scope.socket) return;
 
@@ -576,7 +633,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
 });
 
-// escape uris
+/**
+ * Escape URIs filter
+ */
 App.filter('escape', function() {
   return window.encodeURIComponent;
 });
